@@ -4,7 +4,7 @@
       <a-layout-header class="header">
         <div class="logo">
           <img src="@/assets/tauri.svg" alt="Tauri" class="logo-img" />
-          <span class="logo-text">Tauri + Vben Admin</span>
+          <span class="logo-text">设备信号网关</span>
         </div>
         <a-menu
           theme="dark"
@@ -20,6 +20,14 @@
             <DashboardOutlined />
             仪表板
           </a-menu-item>
+          <a-menu-item key="3" @click="$router.push('/config')">
+            <SettingOutlined />
+            配置管理
+          </a-menu-item>
+          <a-menu-item key="4" @click="$router.push('/api-test')">
+            <ApiOutlined />
+            API测试
+          </a-menu-item>
         </a-menu>
       </a-layout-header>
       
@@ -29,77 +37,98 @@
             <template #title>
               <span class="card-title">
                 <RocketOutlined />
-                欢迎使用 Tauri + Vben Admin
+                欢迎使用设备信号网关
               </span>
             </template>
             
             <div class="intro-content">
               <p class="intro-text">
-                这是一个集成了 <strong>Tauri</strong> 和 <strong>Vben Admin</strong> 的现代化桌面应用程序。
+                一个基于 <strong>Tauri</strong> 构建的高性能设备信号采集与处理系统，支持多种数据存储和消息队列集成。
               </p>
               
               <a-row :gutter="[16, 16]" class="feature-grid">
                 <a-col :span="8">
                   <a-card size="small" class="feature-card">
                     <template #title>
-                      <ThunderboltOutlined style="color: #1890ff;" />
-                      高性能
+                      <DatabaseOutlined style="color: #1890ff;" />
+                      MariaDB
                     </template>
-                    <p>基于 Rust 的 Tauri 框架，提供原生级别的性能体验</p>
+                    <p>高性能关系型数据库，存储设备信息和配置数据</p>
                   </a-card>
                 </a-col>
                 
                 <a-col :span="8">
                   <a-card size="small" class="feature-card">
                     <template #title>
-                      <SafetyOutlined style="color: #52c41a;" />
-                      安全可靠
+                      <LineChartOutlined style="color: #52c41a;" />
+                      InfluxDB
                     </template>
-                    <p>内置安全机制，保护您的应用程序和用户数据</p>
+                    <p>时间序列数据库，专业存储和分析设备信号数据</p>
                   </a-card>
                 </a-col>
                 
                 <a-col :span="8">
                   <a-card size="small" class="feature-card">
                     <template #title>
-                      <BugOutlined style="color: #722ed1;" />
-                      现代化UI
+                      <CloudOutlined style="color: #722ed1;" />
+                      Kafka
                     </template>
-                    <p>基于 Ant Design Vue 的精美界面设计</p>
+                    <p>高吞吐量消息队列，实时发布和处理设备信号</p>
                   </a-card>
                 </a-col>
               </a-row>
               
               <div class="action-section">
                 <a-space size="large">
-                  <a-button type="primary" size="large" @click="handleGreet">
-                    <UserOutlined />
-                    测试 Tauri 调用
-                  </a-button>
-                  <a-button size="large" @click="$router.push('/dashboard')">
+                  <a-button type="primary" size="large" @click="$router.push('/dashboard')">
                     <DashboardOutlined />
-                    前往仪表板
+                    查看仪表盘
+                  </a-button>
+                  <a-button size="large" @click="$router.push('/config')">
+                    <SettingOutlined />
+                    配置管理
+                  </a-button>
+                  <a-button size="large" @click="$router.push('/api-test')">
+                    <ApiOutlined />
+                    API测试
                   </a-button>
                 </a-space>
               </div>
               
               <a-divider />
               
-              <div class="greet-section">
-                <a-input-group compact>
-                  <a-input
-                    v-model:value="greetName"
-                    placeholder="输入您的名字..."
-                    style="width: 200px"
-                    @press-enter="handleGreet"
-                  />
-                  <a-button type="primary" @click="handleGreet">
-                    问候
-                  </a-button>
-                </a-input-group>
-                <div v-if="greetMessage" class="greet-result">
-                  <a-alert :message="greetMessage" type="success" show-icon />
-                </div>
+              <div class="system-status">
+                <a-card size="small" title="系统状态" class="status-card">
+                  <a-row :gutter="[16, 16]">
+                    <a-col :span="8">
+                      <div class="status-item">
+                        <DatabaseOutlined style="color: #1890ff; font-size: 20px;" />
+                        <div class="status-info">
+                          <div class="status-title">MariaDB</div>
+                          <a-badge :status="systemStatus.mariadb ? 'success' : 'error'" :text="systemStatus.mariadb ? '已连接' : '未连接'" />
+                        </div>
+                      </div>
+                    </a-col>
+                    <a-col :span="8">
+                      <div class="status-item">
+                        <LineChartOutlined style="color: #52c41a; font-size: 20px;" />
+                        <div class="status-info">
+                          <div class="status-title">InfluxDB</div>
+                          <a-badge :status="systemStatus.influxdb ? 'success' : 'error'" :text="systemStatus.influxdb ? '已连接' : '未连接'" />
+                        </div>
+                      </div>
+                    </a-col>
+                    <a-col :span="8">
+                      <div class="status-item">
+                        <CloudOutlined style="color: #722ed1; font-size: 20px;" />
+                        <div class="status-info">
+                          <div class="status-title">Kafka</div>
+                          <a-badge :status="systemStatus.kafka ? 'success' : 'error'" :text="systemStatus.kafka ? '已连接' : '未连接'" />
+                        </div>
+                      </div>
+                    </a-col>
+                  </a-row>
+                </a-card>
               </div>
             </div>
           </a-card>
@@ -108,10 +137,10 @@
       
       <a-layout-footer class="footer">
         <div class="footer-content">
-          <span>Tauri + Vben Admin ©2024 Created with ❤️</span>
+          <span>Tauri 设备信号网关 ©2024 由 Rust + Vue 3 构建</span>
           <a-space>
             <a href="https://tauri.app" target="_blank">Tauri 官网</a>
-            <a href="https://vben.vvbin.cn" target="_blank">Vben 文档</a>
+            <a href="https://github.com" target="_blank">项目源码</a>
           </a-space>
         </div>
       </a-layout-footer>
@@ -120,37 +149,47 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import {
   HomeOutlined,
   DashboardOutlined,
+  SettingOutlined,
+  ApiOutlined,
   RocketOutlined,
-  ThunderboltOutlined,
-  SafetyOutlined,
-  BugOutlined,
-  UserOutlined
+  DatabaseOutlined,
+  LineChartOutlined,
+  CloudOutlined
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 
-const greetName = ref('')
-const greetMessage = ref('')
+// 系统状态
+const systemStatus = ref({
+  mariadb: false,
+  influxdb: false,
+  kafka: false
+})
 
-const handleGreet = async () => {
-  if (!greetName.value.trim()) {
-    message.warning('请输入您的名字')
-    return
-  }
-  
+// 检查系统状态
+const checkSystemStatus = async () => {
   try {
-    const result = await invoke('greet', { name: greetName.value })
-    greetMessage.value = result as string
-    message.success('调用成功!')
+    const results = await Promise.allSettled([
+      invoke('test_connection', { service: 'mariadb' }),
+      invoke('test_connection', { service: 'influxdb' }),
+      invoke('test_connection', { service: 'kafka' })
+    ])
+    
+    systemStatus.value.mariadb = results[0].status === 'fulfilled' ? results[0].value as boolean : false
+    systemStatus.value.influxdb = results[1].status === 'fulfilled' ? results[1].value as boolean : false
+    systemStatus.value.kafka = results[2].status === 'fulfilled' ? results[2].value as boolean : false
   } catch (error) {
-    console.error('调用失败:', error)
-    message.error('调用 Tauri 函数失败')
+    console.error('系统状态检查失败:', error)
   }
 }
+
+onMounted(() => {
+  checkSystemStatus()
+})
 </script>
 
 <style scoped>
@@ -246,6 +285,36 @@ const handleGreet = async () => {
   max-width: 400px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.system-status {
+  margin-top: 24px;
+}
+
+.status-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.status-card :deep(.ant-card-head-title) {
+  color: white;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+}
+
+.status-info {
+  flex: 1;
+}
+
+.status-title {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: white;
 }
 
 .footer {

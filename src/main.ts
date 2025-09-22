@@ -17,6 +17,16 @@ const router = createRouter({
       path: '/dashboard',
       name: 'Dashboard', 
       component: () => import('./views/Dashboard.vue')
+    },
+    {
+      path: '/config',
+      name: 'Config',
+      component: () => import('./views/Config.vue')
+    },
+    {
+      path: '/api-test',
+      name: 'ApiTest',
+      component: () => import('./views/ApiTest.vue')
     }
   ]
 })

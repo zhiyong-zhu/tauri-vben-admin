@@ -1,0 +1,30 @@
+# Tauri设备信号网关配置文件
+# 请根据您的环境配置以下参数
+
+[server]
+host = "127.0.0.1"
+port = 8080
+
+# MariaDB 10.4 配置
+# 请确保数据库服务正在运行，并且用户有访问权限
+[mariadb]
+host = "localhost"
+port = 3306
+database = "device_data"
+username = "pike"
+password = "pike"  # 请根据实际情况设置密码
+
+# InfluxDB 1.8 配置
+# 请确保InfluxDB服务正在运行
+[influxdb]
+url = "http://192.168.5.199:8086"
+database = "device_signals"
+# username = "admin"  # 可选，如果需要认证
+# password = "password"  # 可选，如果需要认证
+
+# Kafka 0.9.0.0 配置
+# 请确保Kafka服务正在运行
+[kafka]
+brokers = "192.168.5.199:9092"
+topic = "device-signals"
+client_id = "tauri-device-gateway"
